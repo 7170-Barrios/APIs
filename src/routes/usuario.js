@@ -37,7 +37,7 @@ route.post("/cadastro", (req, res) => {
                 res.status(201).send({ output: "Cadastro realizado", payload: result});
             })
             .catch((erro) =>
-                res.status(500).useChunkedEncodingByDefault({ output: `Erro ao cadastrar -> ${erro}`})
+                res.status(500).send({ output: `Erro ao cadastrar -> ${erro}`})
             );
     });
 });
@@ -68,7 +68,6 @@ route.post("/login", (req, res) => {
 });
 
 route.put("/atualizar/:id", verificar_token, (req, res) => {
-    console.log("body", req.body);
     bcrypt.hash(req.body.senha, cfg.salt, (erro, result) => {
         if (erro)
             return res
@@ -76,9 +75,6 @@ route.put("/atualizar/:id", verificar_token, (req, res) => {
                 .send({ output: `Erro ao tentar gerar a senha -> ${erro}`});
         //senha criptografada
         req.body.senha = result;
-        console.log("result", result);
-        console.log("body senha", req.body.senha);
-
         Usuario.findByIdAndUpdate(
             req.params.id, 
             req.body, 
